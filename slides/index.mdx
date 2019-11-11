@@ -1,9 +1,105 @@
-export const Demo = () => <div style={{ padding: 20, backgroundColor: 'tomato' }} />;
+import { future, highlight } from '@mdx-deck/themes';
+import { Image, Notes, Appear, Split, Horizontal } from 'mdx-deck';
+import { Squares, AudioTag, AudioEvent } from './components';
 
-# Working with Audio in the Browser
+export const themes = [future, highlight];
 
-<Demo />
+# Audio, Browsers, and You
+
+### It's easy until it isn't
+
+<Squares />
 
 ---
 
-# Another One
+# &lt;audio&gt;
+
+<AudioTag />
+<Squares />
+
+```html
+<audio controls src="path/to/file.wav" />
+```
+
+---
+
+# &lt;audio&gt;
+
+<AudioTag />
+<Squares />
+
+```html
+<audio controls>
+  <source src="path/to/file.wav" type="audio/wav" />
+  <source src="path/to/file.mp3" type="audio/mp3" />
+  <source src="path/to/file.ogg" type="audio/ogg" />
+</audio>
+```
+
+---
+
+<Squares />
+
+# &lt;audio&gt;
+
+<AudioEvent />
+
+```js
+const audio = document.querySelector('audio');
+audio.play();
+```
+
+---
+
+<Squares />
+
+# React
+
+```jsx
+export function AudioEvent() {
+  const play = () => {
+    const audio = document.querySelector('audio');
+    audio.play();
+  };
+
+  useEffect(() => {
+    const button = document.querySelector('button');
+    button.addEventListener('click', play);
+    return () => button.removeEventListener('click', play);
+  }, []);
+
+  return (
+    <>
+      <button>Play</button>
+      <audio controls src={bass} />
+    </>
+  );
+}
+```
+
+---
+
+<Squares />
+
+# There's no need to render elements at all
+
+---
+
+<Squares />
+
+# Using `new Audio()`
+
+```js
+const play = () => {
+  const sound = new Audio('path/to/sound.wav');
+  sound.play();
+};
+
+const slaps = [
+  { name: 'closedSlap', audio: new Audio(closedSlap) },
+  { name: 'fingerSlap', audio: new Audio(fingerSlap) },
+  { name: 'mutedSlap', audio: new Audio(mutedSlap) },
+  { name: 'slap', audio: new Audio(slap) },
+  { name: 'fingerTone', audio: new Audio(fingerTone) }
+];
+```

@@ -7,11 +7,15 @@
     "@types/node": "12.12.7",
     "@types/react": "16.9.11",
     "@types/react-dom": "16.9.4",
-    "mdx-deck": "^3.0.13",
+    "prism-react-renderer": "^1.0.2",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-scripts": "3.2.0",
+    "react-syntax-highlighter": "^11.0.2",
     "typescript": "3.7.2"
+  },
+  "devDependencies": {
+    "mdx-deck": "^3.0.13"
   },
   "scripts": {
     "deck": "mdx-deck slides/index.mdx",
