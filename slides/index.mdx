@@ -1,6 +1,7 @@
 import { future, highlight } from '@mdx-deck/themes';
 import { Image, Notes, Appear, Split, Horizontal } from 'mdx-deck';
 import { Squares, AudioTag, AudioEvent } from './components';
+import safari from './assets/safari.png';
 
 export const themes = [future, highlight];
 
@@ -94,7 +95,15 @@ const play = () => {
   const sound = new Audio('path/to/sound.wav');
   sound.play();
 };
+```
 
+---
+
+<Squares />
+
+# Using `new Audio()`
+
+```js
 const slaps = [
   { name: 'closedSlap', audio: new Audio(closedSlap) },
   { name: 'fingerSlap', audio: new Audio(fingerSlap) },
@@ -102,4 +111,58 @@ const slaps = [
   { name: 'slap', audio: new Audio(slap) },
   { name: 'fingerTone', audio: new Audio(fingerTone) }
 ];
+
+const sound = slaps.find(x => x.name === 'slap');
+sound.play();
+```
+
+---
+
+<Squares />
+
+# this works perfectly fine except in Safari
+
+<img src={safari} />
+
+---
+
+<Squares />
+
+# Web Audio API to the Rescue
+
+---
+
+<Squares />
+
+# Loading Dynamically
+
+```js
+// map sounds to create many requests with minimum typing
+const requests = sounds.map(async s => {
+  const r = await fetch(s.src);
+  const buffer = await r.arrayBuffer();
+  return { type: s.type, buffer };
+});
+// It's an array of promises so we can await them all completing
+const soundData = await Promise.all(requests);
+```
+
+At this point we have audio in an `ArrayBuffer`
+
+---
+
+<Squares />
+
+# Parsing to Consume
+
+```ts
+// However the data type is `ArrayBuffer`, which is a
+// byte array in basically any other language
+const parsable = soundData.map(async d => {
+  const sliced = d.buffer.slice(0);
+  const audio = await ctx.decodeAudioData(sliced);
+  return { type: d.type, audio };
+});
+// Again we have an array of promises we need to await completing.
+const parsed: Parsed[] = await Promise.all(parsable);
 ```
