@@ -1,6 +1,12 @@
 import React, { useState, useEffect, FormEvent, useMemo } from 'react';
 import { Sample } from '../types';
-import { ControlStyle, PlayPause, Loop, Range, RangeInput } from '../styles/ControlStyles';
+import {
+  ControlStyle,
+  PlayPause,
+  Loop,
+  Range,
+  RangeInput
+} from '../styles/ControlStyles';
 import { Row } from '../styles';
 
 function round(value: number) {
@@ -14,9 +20,12 @@ export const Control: React.FC<Props> = ({ ctx, sample }) => {
   const [pan, setPan] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
-  const { name, audio } = sample;
+
   const panner = useMemo(() => new StereoPannerNode(ctx, { pan: 0 }), [ctx]);
   const gain = useMemo(() => ctx.createGain(), [ctx]);
+
+  const { name, audio } = sample;
+
   // This effect handles connecting the nodes to the output
   useEffect(() => {
     // setup the track and connect to output.
@@ -43,7 +52,7 @@ export const Control: React.FC<Props> = ({ ctx, sample }) => {
     return () => audio.removeEventListener('timeupdate', updateTime);
   }, [audio, ctx, panner, duration]);
 
-  // similarly this effect is for handling audo ended event
+  // this effect is for handling audio ended event
   useEffect(() => {
     const onEnd = () => {
       if (loop) return;
@@ -81,8 +90,7 @@ export const Control: React.FC<Props> = ({ ctx, sample }) => {
     }
     setPlaying(!playing);
   };
-  // distortion
-  // white box shadow on playing
+
   return (
     <ControlStyle>
       <header>{name}</header>
@@ -101,7 +109,14 @@ export const Control: React.FC<Props> = ({ ctx, sample }) => {
         </div>
         <Row justifyContent='space-between'>
           <div>L</div>
-          <RangeInput value={pan} onChange={onPan} min='-1' max='1' step='0.01' type='range' />
+          <RangeInput
+            value={pan}
+            onChange={onPan}
+            min='-1'
+            max='1'
+            step='0.01'
+            type='range'
+          />
           <div>R</div>
         </Row>
       </Range>
@@ -111,7 +126,14 @@ export const Control: React.FC<Props> = ({ ctx, sample }) => {
         </div>
         <Row justifyContent='space-between'>
           <div>0</div>
-          <RangeInput value={volume} onChange={onVolume} min='0' max='2' step='0.01' type='range' />
+          <RangeInput
+            value={volume}
+            onChange={onVolume}
+            min='0'
+            max='2'
+            step='0.01'
+            type='range'
+          />
           <div>1</div>
         </Row>
       </Range>
