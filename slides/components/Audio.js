@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import bass from '../assets/bass.wav';
+import React, { useEffect } from "react";
+import { bass } from "../assets/";
 
 export function AudioTag() {
   return (
@@ -11,14 +11,14 @@ export function AudioTag() {
 
 export function AudioEvent() {
   const play = e => {
-    const audio = document.querySelector('audio');
+    const audio = document.querySelector("audio");
     audio.play();
   };
 
   useEffect(() => {
-    const button = document.querySelector('button');
-    button.addEventListener('click', play);
-    return () => button.removeEventListener('click', play);
+    const button = document.querySelector("button");
+    button.addEventListener("click", play);
+    return () => button.removeEventListener("click", play);
   }, []);
 
   return (
@@ -26,10 +26,10 @@ export function AudioEvent() {
       <article>
         <button
           style={{
-            background: 'palevioletred',
+            background: "palevioletred",
             border: `none`,
-            fontSize: '2rem',
-            padding: '1rem 2rem',
+            fontSize: "2rem",
+            padding: "1rem 2rem",
             width: `100%`
           }}
         >

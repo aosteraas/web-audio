@@ -1,7 +1,7 @@
-import { future, highlight } from '@mdx-deck/themes';
-import { Image, Notes, Appear, Split, Horizontal } from 'mdx-deck';
-import { Squares, AudioTag, AudioEvent } from './components';
-import safari from './assets/safari.png';
+import { future, highlight } from "@mdx-deck/themes";
+import { Image, Notes, Appear, Split, Horizontal } from "mdx-deck";
+import { Squares, AudioTag, AudioEvent } from "./components";
+import safari from "./assets/safari.png";
 
 export const themes = [future, highlight];
 
@@ -19,7 +19,7 @@ export const themes = [future, highlight];
 <Squares />
 
 ```html
-<audio controls src="path/to/file.wav" />
+<audio controls src="path/to/file.wav"></audio>
 ```
 
 ---
@@ -46,7 +46,7 @@ export const themes = [future, highlight];
 <AudioEvent />
 
 ```js
-const audio = document.querySelector('audio');
+const audio = document.querySelector("audio");
 audio.play();
 ```
 
@@ -58,16 +58,17 @@ audio.play();
 
 ```jsx
 export function AudioEvent() {
+  useEffect(() => {
+    const button = document.querySelector("button");
+    button.addEventListener("click", play);
+    return () => button.removeEventListener("click", play);
+  }, []);
+
   const play = () => {
-    const audio = document.querySelector('audio');
+    // returns `HTMLMediaElement`
+    const audio = document.querySelector("audio");
     audio.play();
   };
-
-  useEffect(() => {
-    const button = document.querySelector('button');
-    button.addEventListener('click', play);
-    return () => button.removeEventListener('click', play);
-  }, []);
 
   return (
     <>
@@ -92,9 +93,26 @@ export function AudioEvent() {
 
 ```js
 const play = () => {
-  const sound = new Audio('path/to/sound.wav');
+  // returns `HTMLMediaElement`
+  const sound = new Audio("path/to/sound.wav");
+  // set current time back to 0 if it's already
+  // playing and you want to start again
+  sound.currentTime = 0;
   sound.play();
 };
+```
+
+---
+
+<Squares />
+
+# Use events to control playback
+
+```js
+sound.addEventListener("canplaythrough", event => {
+  /* the audio is now playable; play it if permissions allow */
+  sound.play();
+});
 ```
 
 ---
@@ -105,14 +123,14 @@ const play = () => {
 
 ```js
 const slaps = [
-  { name: 'closedSlap', audio: new Audio(closedSlap) },
-  { name: 'fingerSlap', audio: new Audio(fingerSlap) },
-  { name: 'mutedSlap', audio: new Audio(mutedSlap) },
-  { name: 'slap', audio: new Audio(slap) },
-  { name: 'fingerTone', audio: new Audio(fingerTone) }
+  { name: "closedSlap", audio: new Audio(closedSlap) },
+  { name: "fingerSlap", audio: new Audio(fingerSlap) },
+  { name: "mutedSlap", audio: new Audio(mutedSlap) },
+  { name: "slap", audio: new Audio(slap) },
+  { name: "fingerTone", audio: new Audio(fingerTone) }
 ];
 
-const sound = slaps.find(x => x.name === 'slap');
+const sound = slaps.find(x => x.name === "slap");
 sound.play();
 ```
 
@@ -129,6 +147,28 @@ sound.play();
 <Squares />
 
 # Web Audio API to the Rescue
+
+---
+
+<Squares />
+
+# it's broad and crazy
+
+- Feed data from `<audio>`, an oscillator, or a stream
+- Use effects like reverb, biquad filter, panner, compressor
+- Throw your sources through effects
+- Send it to output
+
+---
+
+# Create an `AudioContext`
+
+<Squares />
+
+```ts
+const ctx: AudioContext = new (window.AudioContext ||
+  window.webkitAudioContext)();
+```
 
 ---
 
@@ -159,10 +199,86 @@ At this point we have audio in an `ArrayBuffer`
 // However the data type is `ArrayBuffer`, which is a
 // byte array in basically any other language
 const parsable = soundData.map(async d => {
+  // you need to copy the buffer with `slice` if you
+  // want to use it again, else it's 'consumed'
   const sliced = d.buffer.slice(0);
+
   const audio = await ctx.decodeAudioData(sliced);
   return { type: d.type, audio };
 });
+
 // Again we have an array of promises we need to await completing.
 const parsed: Parsed[] = await Promise.all(parsable);
+
+// Finally, set these in state for future use.
+setParsed(parsed);
+```
+
+---
+
+<Squares />
+
+# All good, right?
+
+---
+
+<Squares />
+
+# Wrong
+
+<Appear>
+  <img src={safari} />
+</Appear>
+
+---
+
+# Safari & Edge are two peas in a pod
+
+<Squares />
+
+```js
+// callback syntax: Safari & Edge
+AudioContext.decodeAudioData(ArrayBuffer, successCallback, errorCallback);
+// promise-based: Firefox & Chrome
+AudioContext.decodeAudioData(ArrayBuffer);
+```
+
+---
+
+<Squares />
+
+# Polyfill for Safari
+
+```js
+if (!window.AudioContext && window.webkitAudioContext) {
+  const oldFunc = webkitAudioContext.prototype.decodeAudioData;
+  webkitAudioContext.prototype.decodeAudioData = function(
+    arraybuffer: ArrayBuffer
+  ) {
+    return new Promise((resolve, reject) => {
+      oldFunc.call(this, arraybuffer, resolve, reject);
+    });
+  };
+}
+```
+
+---
+
+<Squares />
+
+# Putting it all together
+
+```js
+// Probably instantiate this elsewhere and import/use everywhere
+const ctx = new AudioContext();
+// get the sound
+const audio = getSound(action);
+// create a buffer source (necessary each time we play sound)
+const source = ctx.createBufferSource();
+// connect to the audio destination (output) and play
+source.buffer = audio;
+// connect the buffer to the AudioContext destination
+source.connect(ctx.destination);
+// play
+source.start();
 ```
