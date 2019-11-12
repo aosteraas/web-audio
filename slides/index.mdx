@@ -13,6 +13,17 @@ export const themes = [future, highlight];
 
 ---
 
+<Squares />
+
+# Let's talk about
+
+- Audio with the `<audio>` tag
+- Controlling `<audio>` with JS
+- Elementless-ish Audio
+- The Web Audio API
+
+---
+
 # &lt;audio&gt;
 
 <AudioTag />
@@ -152,7 +163,7 @@ sound.play();
 
 <Squares />
 
-# "no"
+# no
 
 ---
 
@@ -178,7 +189,8 @@ sound.play();
 <Squares />
 
 ```ts
-const ctx: AudioContext = new (window.AudioContext || window.webkitAudioContext)();
+const ctx: AudioContext = new (window.AudioContext ||
+  window.webkitAudioContext)();
 ```
 
 ---
@@ -264,18 +276,20 @@ ctx.decodeAudioData(ArrayBuffer);
 
 <Squares />
 
-# "no"
+# no
 
 ---
 
 <Squares />
 
-# Polyfill for Safari
+# Polyfill it
 
 ```js
 if (!window.AudioContext && window.webkitAudioContext) {
   const oldFunc = webkitAudioContext.prototype.decodeAudioData;
-  webkitAudioContext.prototype.decodeAudioData = function(arraybuffer: ArrayBuffer) {
+  webkitAudioContext.prototype.decodeAudioData = function(
+    arraybuffer: ArrayBuffer
+  ) {
     return new Promise((resolve, reject) => {
       oldFunc.call(this, arraybuffer, resolve, reject);
     });
@@ -296,10 +310,28 @@ const ctx = new AudioContext();
 const audio = getSound(action);
 // create a buffer source (necessary each time we play sound)
 const source = ctx.createBufferSource();
-// connect to the audio destination (output) and play
+// assign the audio to the buffer
 source.buffer = audio;
 // connect the buffer to the AudioContext destination
 source.connect(ctx.destination);
 // play
 source.start();
 ```
+
+---
+
+<Squares />
+
+# it's demo time
+
+---
+
+<Squares />
+
+# Keyboard
+
+---
+
+<Squares />
+
+# the other one
