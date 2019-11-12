@@ -1,7 +1,7 @@
-import { future, highlight } from "@mdx-deck/themes";
-import { Image, Notes, Appear, Split, Horizontal } from "mdx-deck";
-import { Squares, AudioTag, AudioEvent } from "./components";
-import safari from "./assets/safari.png";
+import { future, highlight } from '@mdx-deck/themes';
+import { Image, Notes, Appear, Split, Horizontal } from 'mdx-deck';
+import { Squares, AudioTag, AudioEvent } from './components';
+import safari from './assets/safari.png';
 
 export const themes = [future, highlight];
 
@@ -46,7 +46,7 @@ export const themes = [future, highlight];
 <AudioEvent />
 
 ```js
-const audio = document.querySelector("audio");
+const audio = document.querySelector('audio');
 audio.play();
 ```
 
@@ -59,14 +59,14 @@ audio.play();
 ```jsx
 export function AudioEvent() {
   useEffect(() => {
-    const button = document.querySelector("button");
-    button.addEventListener("click", play);
-    return () => button.removeEventListener("click", play);
+    const button = document.querySelector('button');
+    button.addEventListener('click', play);
+    return () => button.removeEventListener('click', play);
   }, []);
 
   const play = () => {
     // returns `HTMLMediaElement`
-    const audio = document.querySelector("audio");
+    const audio = document.querySelector('audio');
     audio.play();
   };
 
@@ -94,7 +94,7 @@ export function AudioEvent() {
 ```js
 const play = () => {
   // returns `HTMLMediaElement`
-  const sound = new Audio("path/to/sound.wav");
+  const sound = new Audio('path/to/sound.wav');
   // set current time back to 0 if it's already
   // playing and you want to start again
   sound.currentTime = 0;
@@ -109,7 +109,7 @@ const play = () => {
 # Use events to control playback
 
 ```js
-sound.addEventListener("canplaythrough", event => {
+sound.addEventListener('canplaythrough', event => {
   /* the audio is now playable; play it if permissions allow */
   sound.play();
 });
@@ -123,14 +123,14 @@ sound.addEventListener("canplaythrough", event => {
 
 ```js
 const slaps = [
-  { name: "closedSlap", audio: new Audio(closedSlap) },
-  { name: "fingerSlap", audio: new Audio(fingerSlap) },
-  { name: "mutedSlap", audio: new Audio(mutedSlap) },
-  { name: "slap", audio: new Audio(slap) },
-  { name: "fingerTone", audio: new Audio(fingerTone) }
+  { name: 'closedSlap', audio: new Audio(closedSlap) },
+  { name: 'fingerSlap', audio: new Audio(fingerSlap) },
+  { name: 'mutedSlap', audio: new Audio(mutedSlap) },
+  { name: 'slap', audio: new Audio(slap) },
+  { name: 'fingerTone', audio: new Audio(fingerTone) }
 ];
 
-const sound = slaps.find(x => x.name === "slap");
+const sound = slaps.find(x => x.name === 'slap');
 sound.play();
 ```
 
@@ -141,6 +141,18 @@ sound.play();
 # this works perfectly fine except in Safari
 
 <img src={safari} />
+
+---
+
+<Squares />
+
+# "Just use a library!"
+
+---
+
+<Squares />
+
+# "no"
 
 ---
 
@@ -166,8 +178,7 @@ sound.play();
 <Squares />
 
 ```ts
-const ctx: AudioContext = new (window.AudioContext ||
-  window.webkitAudioContext)();
+const ctx: AudioContext = new (window.AudioContext || window.webkitAudioContext)();
 ```
 
 ---
@@ -238,10 +249,22 @@ setParsed(parsed);
 
 ```js
 // callback syntax: Safari & Edge
-AudioContext.decodeAudioData(ArrayBuffer, successCallback, errorCallback);
+ctx.decodeAudioData(ArrayBuffer, successCallback, errorCallback);
 // promise-based: Firefox & Chrome
-AudioContext.decodeAudioData(ArrayBuffer);
+ctx.decodeAudioData(ArrayBuffer);
 ```
+
+---
+
+<Squares />
+
+# "Just use a library!"
+
+---
+
+<Squares />
+
+# "no"
 
 ---
 
@@ -252,9 +275,7 @@ AudioContext.decodeAudioData(ArrayBuffer);
 ```js
 if (!window.AudioContext && window.webkitAudioContext) {
   const oldFunc = webkitAudioContext.prototype.decodeAudioData;
-  webkitAudioContext.prototype.decodeAudioData = function(
-    arraybuffer: ArrayBuffer
-  ) {
+  webkitAudioContext.prototype.decodeAudioData = function(arraybuffer: ArrayBuffer) {
     return new Promise((resolve, reject) => {
       oldFunc.call(this, arraybuffer, resolve, reject);
     });

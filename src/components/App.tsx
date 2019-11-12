@@ -1,13 +1,21 @@
 import React from 'react';
-import './App.css';
+import { AppStyle } from '../styles';
+import { samples } from '../data/samples';
+import { ctx } from '../audio/';
+import { Control } from './Control';
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>todo</p>
+    <AppStyle>
+      <header className='App-header'>
+        <h2>?</h2>
       </header>
-    </div>
+      <section className='controls'>
+        {samples.map((sample, i) => (
+          <Control key={i} sample={sample} ctx={ctx} />
+        ))}
+      </section>
+    </AppStyle>
   );
 };
 
